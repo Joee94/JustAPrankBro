@@ -17,7 +17,7 @@ public class Player : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
         //Move right until collided with an enemy
         if (enemyCollided == false)
@@ -42,7 +42,7 @@ public class Player : MonoBehaviour {
             
 	}
     
-    void OnTriggerEnter2D(Collider2D other)
+    void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Enemy")
         {
@@ -51,12 +51,9 @@ public class Player : MonoBehaviour {
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    void OnCollisionExit2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Enemy")
-        {
-            enemyCollided = false;
-        }
+       enemyCollided = false;
     }
 
     void Attack()
