@@ -12,9 +12,15 @@ public class Enemy : MonoBehaviour
 
     private bool collided;
 
-	// Use this for initialization
-	void Start ()
+    public Sprite walking;
+    public Sprite punching;
+
+    private int animationState;
+
+    // Use this for initialization
+    void Start ()
     {
+        animationState = 0;
         timer = 0;
         anger = 0;
         punchesReceived = 0;
@@ -23,6 +29,11 @@ public class Enemy : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate ()
     {
+        if (animationState == 0)
+            gameObject.GetComponent<SpriteRenderer>().sprite = walking;
+        if (animationState == 1)
+            gameObject.GetComponent<SpriteRenderer>().sprite = punching;
+
         if (collided)
             timer += Time.deltaTime;
 
@@ -34,12 +45,14 @@ public class Enemy : MonoBehaviour
         if(anger >= maxAnger)
         {
             Debug.Log("Punch Back");
+            animationState = 1;
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerScript>().Lost();
         }
 
 
         if(timer >= initialTimer && punchesReceived == 0)
         {
-            fightWon();
+            fightWon(true);
         }
     }
 
@@ -53,7 +66,7 @@ public class Enemy : MonoBehaviour
         if (anger - amount > 0)
             anger -= amount;
         else
-            fightWon();
+            fightWon(false);
 
     }
 
@@ -67,9 +80,14 @@ public class Enemy : MonoBehaviour
         return anger;
     }
 
-    void fightWon()
+    void fightWon(bool passive)
     {
         Physics2D.IgnoreCollision(GameObject.FindGameObjectWithTag("Player").GetComponent<Collider2D>(), GetComponent<Collider2D>());
+        if(!passive)
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().increaseEnemiesPunched();
+        }
+        Destroy(gameObject, 1f);
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -80,5 +98,10 @@ public class Enemy : MonoBehaviour
     void OnCollisionExit2D(Collision2D other)
     {
         collided = false;
+    }
+
+    public bool isColliding()
+    {
+        return collided;
     }
 }

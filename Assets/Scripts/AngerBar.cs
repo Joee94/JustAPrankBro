@@ -9,6 +9,7 @@ public class AngerBar : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        GetComponent<SpriteRenderer>().sortingLayerName = "HealthBar";
         anger = 0;
         maxAnger = transform.parent.gameObject.GetComponentInParent<Enemy>().getMaxAnger();
         transform.localScale = (new Vector3(0, 1f, 1f));
