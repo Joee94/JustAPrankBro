@@ -45,7 +45,7 @@ public class GameControllerScript : MonoBehaviour {
             Instantiate(floor, new Vector3(initialFloorPosition.x + (i * floorGap), initialFloorPosition.y, initialFloorPosition.z), this.transform.rotation);
         }
 
-        levelTime = noOfBGs * (batteryPower + 1);
+        levelTime = ( noOfBGs * (batteryPower + 1) / 2 );
         player = GameObject.FindGameObjectWithTag("Player");
 
     }
@@ -63,7 +63,7 @@ public class GameControllerScript : MonoBehaviour {
                 if (Random.Range(0, 2) == 1)
                 {
                     Vector3 playerPos = player.transform.position;
-                    Instantiate(enemy, new Vector3(playerPos.x + 30f, playerPos.y, playerPos.z), this.transform.rotation);  //The 30 is an arbitrary number I could increase or decrease
+                    Instantiate(enemy, new Vector3(playerPos.x + 40f, playerPos.y, playerPos.z), this.transform.rotation);  //The 30 is an arbitrary number I could increase or decrease
                 }
                 enemyTimer = 0;
             }
@@ -74,8 +74,7 @@ public class GameControllerScript : MonoBehaviour {
         else
             Won();
 
-
-        views += ((Stats.stats.subscribers + 1) * player.GetComponent<Player>().GetPunchesLanded() + Random.Range(0, 5)) / (noOfBGs - player.GetComponent<Player>().GetEnemiesPunched());
+        views += (int)(((Stats.stats.subscribers + 1) * (player.GetComponent<Player>().GetPunchesLanded())) * (player.GetComponent<Player>().GetEnemiesPunched() + 1) / (Stats.stats.CountPeopleHit() * 50 + 1));
 
         GameObject.Find("Time Left").GetComponent<Text>().text = ("Time Left: " + levelTime.ToString());
         GameObject.Find("Views").GetComponent<Text>().text = ("Views: " + views.ToString());
@@ -101,6 +100,7 @@ public class GameControllerScript : MonoBehaviour {
         Stats.stats.CountViews();
         Stats.stats.CalculateMoney(views);
         Stats.stats.subscribers += (int)(views / Random.Range(10, 50));
+        //Stats.stats.Save();
         Application.LoadLevel("menu");
 
     }

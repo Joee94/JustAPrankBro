@@ -45,8 +45,17 @@ public class Stats : MonoBehaviour
         for (int i = 0; i < videos.Count; i++)
         {
             totalViews += videos[i].views;
-            Debug.Log(totalViews);
         }
+    }
+
+    public int CountPeopleHit()
+    {
+        int totalPeopleHit = 0;
+        for (int i = 0; i < videos.Count; i++)
+        {
+            totalPeopleHit += videos[i].peoplePunched;
+        }
+        return totalPeopleHit;
     }
 
     public void CalculateMoney(int views)
@@ -64,7 +73,7 @@ public class Stats : MonoBehaviour
     public void Save()
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + "/playerStats.dat", FileMode.Open);
+        FileStream file = File.Create(Application.persistentDataPath + "/playerStats.dat");
 
         PlayerData data = new PlayerData();
         data.TotalViews = totalViews;
